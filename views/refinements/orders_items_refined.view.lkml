@@ -30,6 +30,7 @@ view: +order_items {
     type:number
     sql: ${total_gross_revenue}-${inventory_items.total_cost_sold_items} ;;
     value_format_name: usd
+    drill_fields: [products.brand,products.category,products.count,order_items.total_gross_margin]
   }
 
   measure: average_gross_margin {
@@ -84,6 +85,23 @@ view: +order_items {
     description: "Total Sale Price / total number of customers"
     type: number
     sql: ${total_sale_price}/${unique_customer_count};;
+    value_format_name: usd
+    drill_fields: [users.revenue_source_comparison_set*]
+  }
+
+  measure: revenue_from_new_customer {
+    description:"Revenue generated from customers who have recently joined withing the last 90 days"
+    type: sum
+    sql: ${sale_price} ;;
+    filters: [status: "Complete,Processing,Shipped",users.created_date: "90 days"]
+    value_format_name: usd
+  }
+
+  measure: revenue_from_old_customer{
+    description: "Revenue generated from long-term customers"
+    type: sum
+    sql: ${sale_price} ;;
+    filters: [status: "Complete,Processing,Shipped",users.created_date: "before 90 days ago"]
     value_format_name: usd
   }
 }

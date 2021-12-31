@@ -96,9 +96,11 @@ view: users {
   }
 
   dimension: state {
+    map_layer_name: us_states
     type: string
     sql: ${TABLE}."STATE" ;;
-  }
+
+    }
 
   dimension: traffic_source {
     type: string
@@ -110,7 +112,7 @@ view: users {
     sql: ${TABLE}."ZIP" ;;
   }
 
-  measure: count {
+  measure: count_users {
     type: count
     drill_fields: [id, last_name, first_name, events.count, order_items.count]
   }

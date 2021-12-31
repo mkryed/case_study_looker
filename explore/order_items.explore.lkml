@@ -32,4 +32,9 @@ explore: order_items {
     sql_on: ${distribution_centers.id}=${products.distribution_center_id} ;;
     relationship: many_to_one
   }
+  join: events {
+    type: full_outer
+    sql_on: ${events.user_id}=${users.id} ;;
+    relationship: many_to_one
+  }
 }
