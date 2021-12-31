@@ -24,7 +24,7 @@ view: +order_items {
     value_format_name: usd
   }
 
-  measure: total_gross_margin {
+   measure: total_gross_margin {
     description: "Total difference between the total revenue from completed sales and the
     cost of the goods that were sold"
     type:number
@@ -44,7 +44,7 @@ view: +order_items {
   measure: gross_margin_percentage {
     description: "Total Gross Margin Amount / Total Gross Revenue"
     type: number
-    sql: ${total_gross_margin}/${total_gross_revenue} ;;
+    sql: ${total_gross_margin}/NULLIF(${total_gross_revenue},0) ;;
     value_format_name: percent_1
 
   }
