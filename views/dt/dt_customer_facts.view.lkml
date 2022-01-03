@@ -92,13 +92,15 @@ view: dt_customer_facts {
     sql_end:  CURRENT_DATE ;;
   }
 
-
-
   dimension: is_active {
     type: yesno
     sql: ${days_since_latest_order} <= 90 ;;
   }
 
+  dimension: is_repeat_customer {
+    type: yesno
+    sql: ${customer_lifetime_orders} != '1 Order' AND ${customer_lifetime_orders} IS NOT NULL ;;
+  }
 
 #measure
   measure: total_lifetime_revenue {
@@ -127,6 +129,8 @@ view: dt_customer_facts {
     type: average
     sql: ${days_since_latest_order} ;;
   }
+
+
 
 
 
