@@ -1,8 +1,8 @@
 view: dt_customer_facts {
   derived_table: {
     sql: select a.id as user_id,
-      MIN(b.created_at) as First_order_date,
-      MAX(b.created_at) as Latest_order_date,
+      MIN(b.created_at) as First_order,
+      MAX(b.created_at) as Latest_order,
       count(distinct b.order_id) as Total_orders,
       sum(sale_price) as Total_revenue,
       dense_rank() OVER (order by count(distinct b.order_id) DESC) as rank_by_number_orders
@@ -24,14 +24,14 @@ view: dt_customer_facts {
     primary_key: yes
   }
 
-  dimension_group: first_order_date {
+  dimension_group: first_order {
     type: time
-    sql: ${TABLE}."FIRST_ORDER_DATE" ;;
+    sql: ${TABLE}."FIRST_ORDER" ;;
   }
 
-  dimension_group: latest_order_date {
+  dimension_group: latest_order {
     type: time
-    sql: ${TABLE}."LATEST_ORDER_DATE" ;;
+    sql: ${TABLE}."LATEST_ORDER" ;;
   }
 
   dimension: total_orders {
@@ -86,6 +86,20 @@ view: dt_customer_facts {
     value_format_name: usd
    }
 
+  dimension: days_from_latest_order{
+    type: duration_day
+    sql_start: ${latest_order_raw} ;;
+    sql_end:  CURRENT_DATE ;;
+    hidden: yes
+
+
+  }
+
+  dimension: is_active {
+    type: yesno
+    sql: ${days_from_latest_order} <= 90 ;;
+  }
+
 
 #measure
   measure: total_lifetime_revenue {
@@ -114,8 +128,8 @@ view: dt_customer_facts {
 
   set: detail {
     fields: [
-      first_order_date_time,
-      latest_order_date_time,
+      first_order_time,
+      latest_order_time,
       total_lifetime_orders,
       total_lifetime_revenue,
       rank_by_number_orders
