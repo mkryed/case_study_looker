@@ -86,18 +86,17 @@ view: dt_customer_facts {
     value_format_name: usd
    }
 
-  dimension: days_from_latest_order{
+  dimension: days_since_latest_order{
     type: duration_day
     sql_start: ${latest_order_raw} ;;
     sql_end:  CURRENT_DATE ;;
-    hidden: yes
-
-
   }
+
+
 
   dimension: is_active {
     type: yesno
-    sql: ${days_from_latest_order} <= 90 ;;
+    sql: ${days_since_latest_order} <= 90 ;;
   }
 
 
@@ -123,6 +122,11 @@ view: dt_customer_facts {
      sql: ${total_revenue} ;;
     value_format_name: usd
     }
+
+  measure: average_days_since_latest_order {
+    type: average
+    sql: ${days_since_latest_order} ;;
+  }
 
 
 
