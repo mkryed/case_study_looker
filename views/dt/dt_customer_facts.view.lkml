@@ -54,6 +54,7 @@ view: dt_customer_facts {
 
   dimension: customer_lifetime_orders {
     type: string
+    allow_fill: no
     case: {
       when: {
         sql: dt_customer_facts.total_orders =1 ;;
