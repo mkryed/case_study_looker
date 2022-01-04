@@ -1,4 +1,4 @@
-view: sql_runner_query {
+view: customer_purchase_details {
   derived_table: {
     sql: select a.user_id,
       a.inventory_item_id,
@@ -7,10 +7,14 @@ view: sql_runner_query {
       b.product_id,
       b.product_brand as product_brand,
       b.product_category as product_category,
-      b.product_department as product_department
+      b.product_department as product_department,
+      c.COST as cost,
+      c.retail_price as retail_price
       from order_items a
       JOIN inventory_items b
       ON a.inventory_item_id=b.id
+      JOIN products c
+      ON c.id=b.product_id
       order by a.user_id
        ;;
   }
@@ -23,6 +27,8 @@ view: sql_runner_query {
   dimension: user_id {
     type: number
     sql: ${TABLE}."USER_ID" ;;
+    primary_key: yes
+    hidden: yes
   }
 
   dimension: inventory_item_id {
@@ -60,16 +66,27 @@ view: sql_runner_query {
     sql: ${TABLE}."PRODUCT_DEPARTMENT" ;;
   }
 
+  dimension: cost {
+    type: number
+    sql: ${TABLE}."COST" ;;
+  }
+
+  dimension: retail_price {
+    type: number
+    sql: ${TABLE}."RETAIL_PRICE" ;;
+  }
+
   set: detail {
     fields: [
       user_id,
-      inventory_item_id,
       order_id,
       sale_price,
       product_id,
       product_brand,
       product_category,
-      product_department
+      product_department,
+      cost,
+      retail_price
     ]
   }
 }

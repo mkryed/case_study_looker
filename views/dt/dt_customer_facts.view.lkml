@@ -108,6 +108,7 @@ view: dt_customer_facts {
     type: sum
     sql: ${total_revenue} ;;
     value_format_name: usd
+    drill_fields: [customer_purchase_details.detail*]
   }
 
   measure: total_lifetime_orders {
