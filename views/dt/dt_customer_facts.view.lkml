@@ -22,7 +22,7 @@ view: dt_customer_facts {
     type: number
     sql: ${TABLE}."USER_ID" ;;
     primary_key: yes
-  }
+    }
 
   dimension_group: first_order {
     type: time

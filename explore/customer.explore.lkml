@@ -18,6 +18,7 @@ join: customer_purchase_details {
   view_label: "Customer facts"
   type: left_outer
   sql_on: ${dt_customer_facts.user_id}=${customer_purchase_details.user_id} ;;
-  relationship: one_to_one
+  relationship: one_to_many
   }
+
 }

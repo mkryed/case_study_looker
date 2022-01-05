@@ -22,6 +22,7 @@ view: customer_purchase_details {
   measure: count {
     type: count
     drill_fields: [detail*]
+    hidden: yes
   }
 
   dimension: user_id {
