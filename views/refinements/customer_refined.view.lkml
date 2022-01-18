@@ -20,6 +20,20 @@ dimension: month_since_signup {
   sql: DATEDIFF( month, ${created_raw}, current_date) ;;
 }
 
+dimension: days_since_signup_tier {
+  type: tier
+  tiers: [100,200,300,500,700,1000,1300]
+  sql: ${days_since_signup} ;;
+  style: integer
+}
+
+dimension: months_since_signup_tier{
+  type: tier
+  tiers: [4,8,12,16,20]
+  sql: ${month_since_signup} ;;
+  style: integer
+}
+
 measure:count_new_customer {
   description: "Number of new customers who signed up over the past 90 days"
   type: count

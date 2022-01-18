@@ -104,4 +104,14 @@ view: +order_items {
     filters: [status: "Complete,Processing,Shipped",users.created_date: "before 90 days ago"]
     value_format_name: usd
   }
+
+  measure: total_order_counts {
+    type: count_distinct
+    sql: ${order_id} ;;
+  }
+
+  measure: count {
+    type: count
+    drill_fields: [order_items.order_id,order_items.created_date,products.id,order_items.count]
+  }
 }

@@ -1,12 +1,9 @@
 include: "/views/**/*.view"
 
-explore: events {
+explore: users {
   label: "Customer"
-  join: users {
-    type: left_outer
-    sql_on: ${events.user_id}=${users.id} ;;
-    relationship: many_to_one
-  }
+  fields: [ALL_FIELDS*,-order_items.total_gross_margin]
+
 join: dt_customer_facts {
   view_label: "Customer facts"
   type: left_outer
@@ -14,11 +11,22 @@ join: dt_customer_facts {
   relationship: one_to_one
   #fields: [dt_customer_facts.detail*]
 }
-join: customer_purchase_details {
-  view_label: "Customer facts"
+
+join: order_items {
   type: left_outer
-  sql_on: ${dt_customer_facts.user_id}=${customer_purchase_details.user_id} ;;
+  sql_on: ${users.id}=${order_items.user_id} ;;
   relationship: one_to_many
   }
 
+  join: inventory_items {
+    type: left_outer
+    sql_on: ${order_items.inventory_item_id}=${inventory_items.id} ;;
+    relationship: many_to_one
+  }
+
+  join: products {
+    type: left_outer
+    sql_on: ${products.id}=${inventory_items.product_id} ;;
+    relationship: many_to_one
+  }
 }

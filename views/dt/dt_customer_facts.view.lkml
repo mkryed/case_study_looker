@@ -1,20 +1,19 @@
 view: dt_customer_facts {
   derived_table: {
-    sql: select a.id as user_id,
+    sql: select b.user_id as user_id,
       MIN(b.created_at) as First_order,
       MAX(b.created_at) as Latest_order,
       count(distinct b.order_id) as Total_orders,
       sum(sale_price) as Total_revenue,
       dense_rank() OVER (order by count(distinct b.order_id) DESC) as rank_by_number_orders
-      from users a
-      JOIN order_items b
-      ON a.id=b.user_id
-      group by a.id
+      from order_items b
+      group by b.user_id
        ;;
   }
 
   measure: count {
     type: count
+    label: "count"
     drill_fields: [detail*]
   }
 
@@ -36,13 +35,13 @@ view: dt_customer_facts {
 
   dimension: total_orders {
     type: number
-    sql: ${TABLE}."TOTAL_ORDERS" ;;
-    hidden: yes
+    sql: IFNULL(${TABLE}."TOTAL_ORDERS" ,0);;
+    hidden: no
       }
 
   dimension: total_revenue {
     type: number
-    sql: ${TABLE}."TOTAL_REVENUE" ;;
+    sql: IFNULL(${TABLE}."TOTAL_REVENUE",0) ;;
     hidden: yes
     value_format_name: usd
       }
@@ -52,40 +51,20 @@ view: dt_customer_facts {
     sql: ${TABLE}."RANK_BY_NUMBER_ORDERS" ;;
   }
 
-  dimension: customer_lifetime_orders {
-    type: string
-    allow_fill: no
-    case: {
-      when: {
-        sql: dt_customer_facts.total_orders =1 ;;
-        label: "1 Order"
-        }
-      when: {
-        sql: dt_customer_facts.total_orders =2 ;;
-        label: "2 Orders"
-      }
-      when: {
-        sql: dt_customer_facts.total_orders >=3 and dt_customer_facts.total_orders <=5 ;;
-        label: "3-5 Orders"
-      }
-      when: {
-        sql: dt_customer_facts.total_orders >=6 and dt_customer_facts.total_orders <=9 ;;
-        label: "6-9 Orders"
-      }
-      when: {
-        sql: dt_customer_facts.total_orders >=10 ;;
-        label: "10+ Orders"
-      }
-        }
-      }
+  dimension: customer_lifetime_orders_tier {
+    type: tier
+    tiers: [1,2,3,6,10]
+    sql: ${total_orders} ;;
+    style: integer
+    }
 
   dimension: customer_lifetime_revenue {
     type: tier
-    tiers: [0,5,20,50,100,500,1000]
+    tiers: [5,20,50,100,500,1000]
     style: relational
     sql: ${total_revenue} ;;
     value_format_name: usd
-   }
+       }
 
   dimension: days_since_latest_order{
     type: duration_day
@@ -100,7 +79,7 @@ view: dt_customer_facts {
 
   dimension: is_repeat_customer {
     type: yesno
-    sql: ${customer_lifetime_orders} != '1 Order' AND ${customer_lifetime_orders} IS NOT NULL ;;
+    sql: ${dt_customer_facts.total_orders} != '1' AND ${dt_customer_facts.total_orders} IS NOT NULL ;;
   }
 
 #measure
@@ -108,7 +87,7 @@ view: dt_customer_facts {
     type: sum
     sql: ${total_revenue} ;;
     value_format_name: usd
-    drill_fields: [customer_purchase_details.detail*]
+    drill_fields: [products.id,order_items.count,products.retail_price,products.cost,order_items.sale_price]
   }
 
   measure: total_lifetime_orders {
@@ -133,11 +112,9 @@ view: dt_customer_facts {
   }
 
 
-
-
-
   set: detail {
     fields: [
+      total_orders,
       first_order_time,
       latest_order_time,
       total_lifetime_orders,
