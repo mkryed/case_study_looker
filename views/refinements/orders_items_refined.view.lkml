@@ -21,7 +21,7 @@ view: +order_items {
     type: sum
     sql: ${sale_price};;
     filters: [status: "Complete,Processing,Shipped"]
-    value_format_name: usd
+    value_format_name: millions
   }
 
    measure: total_gross_margin {

@@ -87,8 +87,13 @@ view: dt_customer_order_facts {
     filters: [days_between_orders: ">=0 AND <60", rank: ">1"]
   }
 
+  measure: percent_customer_purchased_within_60_days {
+    type: number
+    sql: ${total_customer_purchased_within_60_days}/${user_count} ;;
+    value_format_name: percent_1
+  }
+
   measure:user_count {
-    type: count_distinct
-    sql: ${user_id} ;;
+    type: count
   }
 }

@@ -15,5 +15,9 @@ view: +products {
       url: "https://www.facebook.com/public/{{ value}}"
       icon_url: "https://facebook.com/favicon.ico"
     }
+    link: {
+      label: "Go to customer Behaviour"
+      url: "https://montrealanalytics.ca.looker.com/dashboards/100?Brand={{ value }}"
+    }
   }
 }
