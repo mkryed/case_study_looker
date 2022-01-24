@@ -1,4 +1,7 @@
+
 include: "/views/*/*.view"
+
+include: "/views/raw/*.view"
 
 explore: order_items {
   description: "Detailed order information"
@@ -37,4 +40,5 @@ explore: order_items {
     sql_on: ${events.user_id}=${users.id} ;;
     relationship: many_to_one
   }
+
 }

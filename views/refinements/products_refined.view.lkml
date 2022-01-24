@@ -20,4 +20,13 @@ view: +products {
       url: "https://montrealanalytics.ca.looker.com/dashboards/100?Brand={{ value }}"
     }
   }
+    dimension: category {
+    type: string
+    sql: ${TABLE}."CATEGORY" ;;
+    link: {
+      label: "Category & Brand Info"
+      url: "https://montrealanalytics.ca.looker.com/dashboards/100?Category={{ value | url_encode }}&Brand={{
+      _filters['products.brand'] | url_encode }}"
+    }
+  }
 }
