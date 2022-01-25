@@ -33,6 +33,7 @@ view: users {
   }
 
   measure: average_age {
+    group_label: "Average"
     type: average
     sql: ${age} ;;
   }
@@ -55,10 +56,12 @@ view: users {
     type: time
     timeframes: [
       raw,
+      day_of_week,
       time,
       date,
       week,
       month,
+      month_name,
       quarter,
       year
     ]
@@ -114,6 +117,7 @@ view: users {
 
   measure: count_users {
     label: "Number of Total Users"
+    group_label: "Count"
     type: count
     drill_fields: [id, last_name, first_name, events.count, order_items.count]
   }

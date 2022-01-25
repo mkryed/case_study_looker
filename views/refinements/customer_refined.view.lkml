@@ -35,6 +35,8 @@ dimension: months_since_signup_tier{
 }
 
 measure:count_new_customer {
+  label: "Number of new customers"
+  group_label: "Count"
   description: "Number of new customers who signed up over the past 90 days"
   type: count
   filters: [created_date: "90 days ago"]
@@ -42,11 +44,15 @@ measure:count_new_customer {
 }
 
 measure: avg_days_since_signup {
+  label: "Average days since singnup"
+  group_label: "Average"
   type: average
   sql: ${days_since_signup} ;;
 }
 
 measure: avg_month_since_signup {
+  label: "Average months since singhup"
+  group_label: "Average"
   type: average
   sql: ${month_since_signup} ;;
 }

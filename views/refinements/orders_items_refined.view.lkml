@@ -58,7 +58,7 @@ view: +order_items {
   }
 
 
-  measure: Percentage_gross_margin {
+  measure: percentage_gross_margin {
     group_label: "Percentage"
     description: "Total Gross Margin Amount / Total Gross Revenue"
     type: number
@@ -67,7 +67,8 @@ view: +order_items {
 
   }
 
-  measure: number_of_items_returned {
+  measure: count_items_returned {
+    label: "Number of items returned"
     group_label: "Count"
     description: "Number of Returned Items"
     type: count
@@ -78,12 +79,13 @@ view: +order_items {
     group_label: "Percentage"
     description: "Number of Items Returned / total number of items sold"
     type: number
-    sql: ${number_of_items_returned}/${count} ;;
+    sql: ${count_items_returned}/${count_total} ;;
     value_format_name: percent_1
   }
 
-  measure: number_of_customers_with_return{
+  measure: count_customers_with_return{
     group_label: "Count"
+    label: "Number of customers with return"
     description: "Number of users who have returned an item at some point"
     type: count_distinct
     sql: ${user_id} ;;
@@ -92,23 +94,24 @@ view: +order_items {
 
   measure: percentage_of_user_with_return {
     group_label: "Percentage"
-    description: "Number of Customer Returning Items / total number of customers"
+    description: "Number of customer returning items / total number of customers"
     type: number
-    sql: ${number_of_customers_with_return}/${users.count_users} ;;
+    sql: ${count_customers_with_return}/${users.count_users} ;;
     value_format_name: percent_1
   }
 
 
   measure: average_spend_per_customer {
     group_label: "Average"
-    description: "Total Sale Price / total number of customers"
+    description: "Total sale price / total number of customers"
     type: number
     sql: ${total_sale_price}/${users.count_users};;
     value_format_name: usd
     drill_fields: [users.revenue_source_comparison_set*]
   }
 
-  measure: revenue_from_new_customer {
+  measure: total_revenue_from_new_customer {
+    group_label: "Sum"
     description:"Revenue generated from customers who have recently joined withing the last 90 days"
     type: sum
     sql: ${sale_price} ;;
@@ -116,7 +119,8 @@ view: +order_items {
     value_format_name: usd
   }
 
-  measure: revenue_from_old_customer{
+  measure: total_revenue_from_old_customer{
+    group_label: "Sum"
     description: "Revenue generated from long-term customers"
     type: sum
     sql: ${sale_price} ;;
@@ -124,24 +128,23 @@ view: +order_items {
     value_format_name: usd
   }
 
-  measure: total_order_counts {
+  measure: count_total_orders {
     group_label: "Count"
-    label: "Number of Orders Placed"
+    label: "Number of orders placed"
     type: count_distinct
     sql: ${order_id} ;;
-    drill_fields: [created_date,count]
-  }
+    }
 
-  measure: count {
+  measure: count_total {
     group_label: "Count"
-    label: "Number of All Order Items"
+    label: "Number of all order items"
     type: count
     drill_fields: [order_items.order_id,order_items.created_date,products.id,order_items.count]
   }
 
   measure: count_of_sold_order_items {
     group_label: "Count"
-    label: "Number of Sold Order Items Only"
+    label: "Number of sold order items only"
     filters: [status: "Complete,Processing,Shipped"]
     type: count
     drill_fields: [order_items.order_id,order_items.created_date,products.id,order_items.count]
