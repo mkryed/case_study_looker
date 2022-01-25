@@ -4,8 +4,7 @@ view: dt_customer_facts {
       MIN(b.created_at) as First_order,
       MAX(b.created_at) as Latest_order,
       count(distinct b.order_id) as Total_orders,
-      sum(sale_price) as Total_revenue,
-      dense_rank() OVER (order by count(distinct b.order_id) DESC) as rank_by_number_orders
+      sum(sale_price) as Total_revenue
       from order_items b
       group by b.user_id
        ;;
@@ -46,10 +45,6 @@ view: dt_customer_facts {
     value_format_name: usd
       }
 
-  dimension: rank_by_number_orders{
-    type: number
-    sql: ${TABLE}."RANK_BY_NUMBER_ORDERS" ;;
-  }
 
   dimension: customer_lifetime_orders_tier {
     type: tier
@@ -118,8 +113,7 @@ view: dt_customer_facts {
       first_order_time,
       latest_order_time,
       total_lifetime_orders,
-      total_lifetime_revenue,
-      rank_by_number_orders
+      total_lifetime_revenue
     ]
   }
 }
