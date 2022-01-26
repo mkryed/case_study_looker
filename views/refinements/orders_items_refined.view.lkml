@@ -150,5 +150,40 @@ view: +order_items {
     drill_fields: [order_items.order_id,order_items.created_date,products.id,order_items.count]
   }
 
+## For customer Cohort Analysis
+
+  dimension_group: since_signup {
+    type: duration
+    sql_start: ${users.created_raw} ;;
+    sql_end: ${order_items.created_raw} ;;
+  }
+
+  dimension: months_since_signup_tier {
+    group_label: "Tier"
+    type: tier
+    tiers: [1,2,3,6,12]
+    style: integer
+    sql: ${months_since_signup} ;;
+  }
+
+  dimension: days_since_signup_tier {
+    group_label: "Tier"
+    type: tier
+    style: integer
+    tiers: [10,50,100,200,350]
+    sql: ${days_since_signup} ;;
+  }
+
+  measure: avg_months_since_signup {
+    group_label: "Average"
+    type: average
+    sql: ${months_since_signup} ;;
+  }
+
+  measure: avg_days_since_signup {
+    group_label: "Average"
+    type: average
+    sql: ${days_since_signup} ;;
+  }
 
 }

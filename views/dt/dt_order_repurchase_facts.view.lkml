@@ -12,7 +12,6 @@ view: dt_order_repurchase_facts {
 
                         p.category as category,
 
-
                         MIN(order_items.created_at) OVER(PARTITION BY order_items.user_id) as first_ordered_at,
 
                         MAX(order_items.created_at) OVER(PARTITION BY order_items.user_id) as last_ordered_at,
@@ -20,8 +19,6 @@ view: dt_order_repurchase_facts {
                         order_items.created_at as ordered,
 
                         COUNT(order_items.id) OVER(partition by order_items.user_id) as lifetime_orders,
-
-
 
                         ROW_NUMBER() OVER(PARTITION BY order_items.user_id ORDER BY order_items.created_at) as order_sequence_number,
 
@@ -31,7 +28,9 @@ view: dt_order_repurchase_facts {
 
                         DATEDIFF(DAY, CURRENT_DATE,CAST(MIN(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_first_order,
 
-                        DATEDIFF(DAY, CURRENT_DATE,CAST(MAX(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_latest_order
+                        DATEDIFF(DAY, CURRENT_DATE,CAST(MAX(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_latest_order,
+
+                        SUM(order_items.sale_price)  as lifetime_revenue
 
                       FROM  order_items
 
@@ -91,13 +90,15 @@ view: dt_order_repurchase_facts {
   dimension_group: first_ordered_at {
     type: time
     sql: ${TABLE}."FIRST_ORDERED_AT" ;;
-    timeframes: [month,month_name,year]
+    timeframes: [date,month,month_name,year]
+    hidden: yes
   }
 
   dimension_group: last_ordered_at {
     type: time
     sql: ${TABLE}."LAST_ORDERED_AT" ;;
-    timeframes: [month,month_name,year]
+    timeframes: [date,month,month_name,year]
+    hidden: yes
   }
 
   dimension: ordered {
@@ -109,6 +110,14 @@ view: dt_order_repurchase_facts {
   dimension: lifetime_orders {
     type: number
     sql: ${TABLE}."LIFETIME_ORDERS" ;;
+    hidden: yes
+
+  }
+
+  measure: lifetime_orders_measure {
+    type: sum_distinct
+    sql: ${lifetime_orders} ;;
+    sql_distinct_key: ${user_id} ;;
     hidden: yes
   }
 
@@ -133,11 +142,13 @@ view: dt_order_repurchase_facts {
   dimension: days_since_first_order {
     type: number
     sql: ${TABLE}."DAYS_SINCE_FIRST_ORDER" ;;
+
   }
 
   dimension: days_since_latest_order {
     type: number
     sql: ${TABLE}."DAYS_SINCE_LATEST_ORDER" ;;
+
   }
 
   ###### Dimension created #######
@@ -149,25 +160,19 @@ view: dt_order_repurchase_facts {
     sql: ${repurchase_gap} ;;
   }
 
-  dimension: days_since_first_order_tier {
-    type: tier
-    tiers: [30,60,90,120,150,180]
-    style: integer
-    sql: ${days_since_first_order} ;;
-  }
+  # #dimension: days_since_first_order_tier {
+  #   type: tier
+  #   tiers: [30,60,90,120,150,180]
+  #   style: integer
+  #   sql: ${days_since_first_order} ;;
+  # }
 
   dimension: repurchase_made {
     type: yesno
     hidden: yes
-    sql: ${repurchase_gap} NOT NULL ;;
+    sql: ${repurchase_gap} IS NOT NULL ;;
   }
 
-   dimension: customer_lifetime_orders_tier {
-    type: tier
-    tiers: [1,2,3,6,10]
-    sql: ${lifetime_orders} ;;
-    style: integer
-  }
 
 
   ##>> These dimension will check if a user's 2nd purchase was within certain time intervals ##
@@ -187,12 +192,6 @@ view: dt_order_repurchase_facts {
 
 
   ##### MEASURE ######
-
-  measure: total_lifetime_orders {
-    description: "The total number of orders placed over the course of customers' lifetimes"
-    type: sum
-    sql: ${lifetime_orders} ;;
-  }
 
 
   measure: count_repurchases {
@@ -233,15 +232,15 @@ view: dt_order_repurchase_facts {
 
   }
 
-  measure: percent_of_customers {
+  # measure: percent_of_customers {
 
-    drill_fields: [detail*]
+  #   drill_fields: [detail*]
 
-    type: percent_of_total
+  #   type: percent_of_total
 
-    sql: ${count_customers} ;;
+  #   sql: ${count_customers} ;;
 
-  }
+  # }
 
   ##>> Count of repurchases by users in N days since first purchase##
 
@@ -306,7 +305,7 @@ view: dt_order_repurchase_facts {
     type: number
     drill_fields: [detail*]
     value_format_name: percent_1
-    sql: 1.0*${count_repurchases}/nullif(${count_customers},0) ;;
+    sql: 1.0*${count_repurchases}/NULLIF(${count_customers},0) ;;
   }
 
   measure: repurchase_rate_30 {
@@ -412,8 +411,8 @@ view: dt_order_repurchase_facts {
       user_id,
       order_id,
       category,
-      first_ordered_at_month,
-      last_ordered_at_month,
+      first_ordered_at_date,
+      last_ordered_at_date,
       ordered,
       lifetime_orders,
       order_sequence_number,

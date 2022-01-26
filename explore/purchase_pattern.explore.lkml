@@ -1,5 +1,6 @@
 include: "/views/*/*.view"
 explore: purchase_pattern {
+  label: "Customer Behaviour"
   from: order_items
   view_name: order_items
   join: dt_order_repurchase_facts {
@@ -19,6 +20,12 @@ explore: purchase_pattern {
     type: left_outer
     sql_on: ${order_items.user_id}=${users.id} ;;
     relationship: many_to_one
+  }
+  join: dt_customer_facts {
+    view_label: "Customer Behaviour Facts"
+    type: left_outer
+    sql_on: ${order_items.user_id}=${dt_customer_facts.user_id};;
+    relationship:many_to_one
   }
 
   join: products {

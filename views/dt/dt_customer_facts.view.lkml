@@ -4,9 +4,9 @@ view: dt_customer_facts {
       MIN(b.created_at) as First_order,
       MAX(b.created_at) as Latest_order,
       count(distinct b.order_id) as Total_orders,
-      sum(sale_price) as Total_revenue
+      sum(b.sale_price) as Total_revenue
       from order_items b
-      group by b.user_id
+      group by 1
        ;;
   }
 
@@ -14,6 +14,7 @@ view: dt_customer_facts {
     type: count
     label: "count"
     drill_fields: [detail*]
+    hidden: yes
   }
 
   dimension: user_id {
@@ -49,11 +50,11 @@ view: dt_customer_facts {
   dimension: customer_lifetime_orders_tier {
     type: tier
     tiers: [1,2,3,6,10]
-    sql: ${total_orders} ;;
+    sql: NULLIF(${total_orders},0) ;;
     style: integer
     }
 
-  dimension: customer_lifetime_revenue {
+  dimension: customer_lifetime_revenue_tier {
     type: tier
     tiers: [5,20,50,100,500,1000]
     style: relational
