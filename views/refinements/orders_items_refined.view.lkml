@@ -135,6 +135,13 @@ view: +order_items {
     sql: ${order_id} ;;
     }
 
+    measure: count_customer_who_ordered{
+      group_label: "Count"
+      label: "Number of Customer who order"
+      type: count_distinct
+      sql: ${user_id} ;;
+    }
+
   measure: count_total {
     group_label: "Count"
     label: "Number of all order items"
@@ -159,6 +166,8 @@ view: +order_items {
   }
 
   dimension: months_since_signup_tier {
+    description: "The number of months since a customer has signed up on the
+website"
     group_label: "Tier"
     type: tier
     tiers: [1,2,3,6,12]
@@ -167,6 +176,8 @@ view: +order_items {
   }
 
   dimension: days_since_signup_tier {
+    description: "The number of days since a customer has signed up on the
+website"
     group_label: "Tier"
     type: tier
     style: integer
@@ -178,12 +189,16 @@ view: +order_items {
     group_label: "Average"
     type: average
     sql: ${months_since_signup} ;;
+    description: "Average number of months between a customer initially
+registering on the website and now"
   }
 
   measure: avg_days_since_signup {
     group_label: "Average"
     type: average
     sql: ${days_since_signup} ;;
+    description: "Average number of days between a customer initially
+registering on the website and now"
   }
 
 }
