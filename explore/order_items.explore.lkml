@@ -11,7 +11,7 @@ explore: order_items {
     type: left_outer
     relationship: one_to_one
     sql_on: ${dt_order_items_fcts.id}=${order_items.id} ;;
-    fields: [dt_order_items_fcts.dt_order*]
+
   }
 
   join: inventory_items {

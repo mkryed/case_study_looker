@@ -6,6 +6,7 @@ connection: "snowlooker"
 include: "/explore/*.explore"
 
 
+
 # Datagroups define a caching policy for an Explore. To learn more,
 # use the Quick Help panel on the right to see documentation.
 
@@ -19,7 +20,6 @@ persist_with: mikhail_case_study_default_datagroup
 #creating a new value format
 named_value_format: millions {
   value_format: "[>=1000000]0.00,,\"M\";[>=1000]0.00,\"K\";0.00"
-
 }
 # Explores allow you to join together different views (database tables) based on the
 # relationships between fields. By joining a view into an Explore, you make those
