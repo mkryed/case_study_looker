@@ -62,6 +62,23 @@ measure:count_new_customer {
     registering on the website and now"
   }
 
+  #MOM AnALYSIS
+
+  dimension: is_month_to_date {
+    type: yesno
+    sql: ${created_day_of_month} <= day(current_date()) ;;
+  }
+
+  dimension: is_year_to_date {
+    type: yesno
+    sql: ${created_day_of_year} <= dayofyear(current_date()) ;;
+  }
+
+  dimension: is_customer_new {
+    type: yesno
+    sql: DATEDIFF( day,${created_date},CURRENT_DATE()  ) <= 90 ;;
+  }
+
 set: revenue_source_comparison_set {
   fields: [age_tier,gender,count_users,count_new_customer]
 }

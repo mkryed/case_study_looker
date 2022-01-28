@@ -57,6 +57,8 @@ view: users {
     timeframes: [
       raw,
       day_of_week,
+      day_of_month,
+      day_of_year,
       time,
       date,
       week,

@@ -100,7 +100,6 @@ view: +order_items {
     value_format_name: percent_1
   }
 
-
   measure: average_spend_per_customer {
     group_label: "Average"
     description: "Total sale price / total number of customers"
