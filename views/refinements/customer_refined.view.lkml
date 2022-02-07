@@ -2,12 +2,19 @@ include: "/views/**/*.view"
 
 view: +users {
 
+
+
 dimension: age_tier {
   type: tier
   tiers: [15,25,35,50,65]
   style: integer
   allow_fill: yes
   sql: ${age} ;;
+}
+
+measure: proportion_of_customer {
+  type: percent_of_total
+  sql: ${count_users} ;;
 }
 
 
@@ -22,9 +29,11 @@ measure:count_new_customer {
 
   dimension_group: since_signup {
     type: duration
+    intervals: [day, month]
     sql_start: ${users.created_raw} ;;
     sql_end: CURRENT_TIMESTAMP() ;;
   }
+
 
   dimension: users_months_since_signup_tier {
     description: "The number of months since a customer has signed up on the

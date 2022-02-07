@@ -5,6 +5,7 @@ include: "/views/raw/*.view"
 
 explore: order_items {
   description: "Detailed order information"
+  # fields: [ALL_FIELDS*,-products.brand_comparator,-products.insert_brand_to_compare,-products.insert_category_to_compare,-products.category_comparator]
 
   join: dt_order_items_fcts {
     view_label: "Order Items"

@@ -16,17 +16,44 @@ view: +products {
       icon_url: "https://facebook.com/favicon.ico"
     }
     link: {
-      label: "Go to customer Behaviour"
-      url: "https://montrealanalytics.ca.looker.com/dashboards/100?Brand={{ value }}"
+      label: "Go to Brand Comparison"
+      url: "https://montrealanalytics.ca.looker.com/dashboards/110?Insert+Brand+to+Compare={{ value }}"
     }
   }
     dimension: category {
     type: string
-    sql: ${TABLE}."CATEGORY" ;;
+    sql:
+            ${TABLE}."CATEGORY"
+             ;;
     link: {
       label: "Category & Brand Info"
       url: "https://montrealanalytics.ca.looker.com/dashboards/100?Category={{ value | url_encode }}&Brand={{
       _filters['products.brand'] | url_encode }}"
     }
   }
+
+  filter: insert_brand_to_compare {
+    suggest_dimension: products.brand
+  }
+
+
+  dimension: brand_comparator {
+    type: string
+    sql: CASE
+            WHEN{% condition insert_brand_to_compare %}
+            ${products.brand}
+            {% endcondition %} THEN  ${products.brand}
+            ELSE 'Rest of Brands'
+            END;;
+  }
+
+
+
+
+
+  set:order_items  {
+    fields: [brand,category,average_cost,cost,count,department,distribution_center_id,id,name,retail_price,sku,total_cost]
+  }
+
+
 }

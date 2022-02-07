@@ -23,7 +23,7 @@ view: dt_customer_facts {
     primary_key: yes
     }
 
-  dimension_group: first_order {
+    dimension_group: first_order {
     description: "The date in which a customer placed his or her first order on the
 fashion.ly website"
     type: time
@@ -65,7 +65,7 @@ using the website."
 customer over the course of their patronage"
     type: tier
     tiers: [5,20,50,100,500,1000]
-    style: relational
+    style: integer
     sql: ${total_revenue} ;;
     value_format_name: usd
        }

@@ -127,10 +127,10 @@ on the website"
   }
 
   measure: count_of_user_with_60_days_purchase_rate {
-    type: count
-    sql: ${has_purchase_within_60days} ;;
+    type: count_distinct
+    sql: ${user_id} ;;
+    filters: [has_purchase_within_60days: "Yes"]
 
   }
-
 
 }
