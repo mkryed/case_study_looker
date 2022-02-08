@@ -33,11 +33,13 @@ view: +products {
   }
 
   filter: insert_brand_to_compare {
+    description: "Choose the brand you wish to compare with the rest of the population or with another brand"
     suggest_dimension: products.brand
   }
 
 
   dimension: brand_comparator {
+
     type: string
     sql: CASE
             WHEN{% condition insert_brand_to_compare %}

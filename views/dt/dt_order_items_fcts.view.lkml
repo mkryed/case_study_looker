@@ -20,4 +20,4 @@ view: dt_order_items_fcts {
     type: number
     sql: ${TABLE}."RUNNING_TOTAL" ;;
   }
-  }
+}

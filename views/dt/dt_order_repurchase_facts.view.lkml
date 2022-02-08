@@ -2,50 +2,50 @@ view: dt_order_repurchase_facts {
   derived_table: {
     sql: SELECT ROW_NUMBER() OVER(ORDER BY ordered) as RN,*
 
-                  FROM
+                        FROM
 
-                      ( SELECT
+                            ( SELECT
 
-                        order_items.user_id as user_id,
+                              order_items.user_id as user_id,
 
-                        order_items.id AS order_id,
+                              order_items.id AS order_id,
 
-                        p.category as category,
+                              p.category as category,
 
-                        MIN(order_items.created_at) OVER(PARTITION BY order_items.user_id) as first_ordered_at,
+                              MIN(order_items.created_at) OVER(PARTITION BY order_items.user_id) as first_ordered_at,
 
-                        MAX(order_items.created_at) OVER(PARTITION BY order_items.user_id) as last_ordered_at,
+                              MAX(order_items.created_at) OVER(PARTITION BY order_items.user_id) as last_ordered_at,
 
-                        order_items.created_at as ordered,
+                              order_items.created_at as ordered,
 
-                        COUNT(order_items.id) OVER(partition by order_items.user_id) as lifetime_orders,
+                              COUNT(order_items.id) OVER(partition by order_items.user_id) as lifetime_orders,
 
-                        ROW_NUMBER() OVER(PARTITION BY order_items.user_id ORDER BY order_items.created_at) as order_sequence_number,
+                              ROW_NUMBER() OVER(PARTITION BY order_items.user_id ORDER BY order_items.created_at) as order_sequence_number,
 
-                        LEAD(order_items.created_at) OVER(partition by order_items.user_id ORDER BY order_items.created_at) as second_created_at,
+                              LEAD(order_items.created_at) OVER(partition by order_items.user_id ORDER BY order_items.created_at) as second_created_at,
 
-                        DATEDIFF(DAY,CAST(order_items.created_at as date),CAST(LEAD(order_items.created_at) over(partition by order_items.user_id ORDER BY order_items.created_at) AS date)) as repurchase_gap,
+                              DATEDIFF(DAY,CAST(order_items.created_at as date),CAST(LEAD(order_items.created_at) over(partition by order_items.user_id ORDER BY order_items.created_at) AS date)) as repurchase_gap,
 
-                        DATEDIFF(DAY, CURRENT_DATE,CAST(MIN(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_first_order,
+                              DATEDIFF(DAY, CURRENT_DATE,CAST(MIN(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_first_order,
 
-                        DATEDIFF(DAY, CURRENT_DATE,CAST(MAX(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_latest_order,
+                              DATEDIFF(DAY, CURRENT_DATE,CAST(MAX(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_latest_order,
 
-                        SUM(order_items.sale_price)  as lifetime_revenue
+                              SUM(order_items.sale_price)  as lifetime_revenue
 
-                      FROM  order_items
+                            FROM  order_items
 
-                      JOIN inventory_items ii ON order_items.inventory_item_id=ii.id
+                            JOIN inventory_items ii ON order_items.inventory_item_id=ii.id
 
-                      JOIN products p on ii.product_id = p.id
+                            JOIN products p on ii.product_id = p.id
 
-                      WHERE
+                            WHERE
 
-                      {% condition product_category %} p.category {% endcondition %}
+                            {% condition product_category %} p.category {% endcondition %}
 
-                      GROUP BY 1,2,3,6
+                            GROUP BY 1,2,3,6
 
-                      )
-             ;;
+                            )
+                   ;;
   }
 
   ##### Filter ######
@@ -67,7 +67,7 @@ view: dt_order_repurchase_facts {
     sql: ${TABLE}."RN" ;;
     primary_key: yes
     hidden: yes
-    }
+  }
 
   dimension: user_id {
     type: number

@@ -2,35 +2,35 @@ view: order_patterns_and_frequnecy {
   derived_table: {
     sql: SELECT
 
-                                    order_items.user_id as user_id,
+                                          order_items.user_id as user_id,
 
 
-                                    order_items.order_id as order_id,
+                                          order_items.order_id as order_id,
 
-                                    LEAD(order_items.order_id) OVER(partition by order_items.user_id ORDER BY order_items.created_at) as second_order_id,
+                                          LEAD(order_items.order_id) OVER(partition by order_items.user_id ORDER BY order_items.created_at) as second_order_id,
 
-                                    ROW_NUMBER() OVER(PARTITION BY order_items.user_id ORDER BY order_items.created_at) as order_sequence_number,
+                                          ROW_NUMBER() OVER(PARTITION BY order_items.user_id ORDER BY order_items.created_at) as order_sequence_number,
 
-                                    MIN(order_items.created_at) OVER(PARTITION BY order_items.user_id) as first_ordered_at,
-
-
-                                    order_items.created_at as ordered,
-
-                                    LEAD(order_items.created_at) OVER(partition by order_items.user_id ORDER BY order_items.created_at) as second_created_at,
+                                          MIN(order_items.created_at) OVER(PARTITION BY order_items.user_id) as first_ordered_at,
 
 
-                                    DATEDIFF(DAY,CAST(order_items.created_at as date),CAST(LEAD(order_items.created_at) over(partition by order_items.user_id ORDER BY order_items.created_at) AS date)) days_between_orders,
+                                          order_items.created_at as ordered,
 
-                                    DATEDIFF(DAY, CURRENT_DATE,CAST(MIN(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_first_order,
-
-                                    DATEDIFF(DAY, CURRENT_DATE,CAST(MAX(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_latest_order
+                                          LEAD(order_items.created_at) OVER(partition by order_items.user_id ORDER BY order_items.created_at) as second_created_at,
 
 
-                                  FROM  order_items
+                                          DATEDIFF(DAY,CAST(order_items.created_at as date),CAST(LEAD(order_items.created_at) over(partition by order_items.user_id ORDER BY order_items.created_at) AS date)) days_between_orders,
+
+                                          DATEDIFF(DAY, CURRENT_DATE,CAST(MIN(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_first_order,
+
+                                          DATEDIFF(DAY, CURRENT_DATE,CAST(MAX(order_items.created_at) OVER(partition by order_items.user_id) as DATE)) as days_since_latest_order
 
 
-                                  GROUP BY 1,2,6
-             ;;
+                                        FROM  order_items
+
+
+                                        GROUP BY 1,2,6
+                   ;;
   }
 
 
@@ -54,7 +54,7 @@ view: order_patterns_and_frequnecy {
 
   dimension: order_sequence_number {
     description: "The order in which a customer placed orders over their lifetime as
-a fashion.ly customer"
+    a fashion.ly customer"
     type: number
     sql: ${TABLE}."ORDER_SEQUENCE_NUMBER" ;;
   }
@@ -99,14 +99,14 @@ a fashion.ly customer"
 
   dimension: is_first_purchase {
     description: "Indicator for whether a purchase is a customer’s first purchase or
-not"
+    not"
     type: yesno
     sql: ${order_sequence_number}=1 ;;
   }
 
   dimension: has_subsequent_order {
     description: "Indicator for whether or not a customer placed a subsequent order
-on the website"
+    on the website"
     type: yesno
     sql: ${order_id}!=${second_order_id} AND ${ordered_date}=${second_created_at_date} ;;
   }
