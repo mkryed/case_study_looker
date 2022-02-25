@@ -13,6 +13,7 @@ view: dt_order_items_fcts {
     type: number
     sql: ${TABLE}."ID" ;;
     primary_key: yes
+    hidden: yes
   }
 
   dimension: running_total {

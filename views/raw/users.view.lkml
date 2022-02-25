@@ -2,9 +2,8 @@
 view: users {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: "PUBLIC"."USERS"
-    ;;
-  drill_fields: [id]
+  sql_table_name: "PUBLIC"."USERS";;
+
   # This primary key is the unique key for this table in the underlying database.
   # You need to define a primary key in a view in order to join to other views.
 
@@ -77,7 +76,7 @@ view: users {
 
   dimension: first_name {
     type: string
-    sql: ${TABLE}."FIRST_NAME" ;;
+    sql: ${TABLE}."FIRST" ;;
   }
 
   dimension: gender {
@@ -88,6 +87,11 @@ view: users {
   dimension: last_name {
     type: string
     sql: ${TABLE}."LAST_NAME" ;;
+  }
+
+  dimension: full_name {
+    type: string
+    sql: ${first_name} ||' '|| ${last_name} ;;
   }
 
   dimension: latitude {

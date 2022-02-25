@@ -26,6 +26,7 @@ view: +order_items {
     sql: ${sale_price};;
     filters: [status: "Complete,Processing,Shipped"]
     value_format_name: millions
+    drill_fields: [detail*]
   }
 
   measure: average_total_gross_revenue {

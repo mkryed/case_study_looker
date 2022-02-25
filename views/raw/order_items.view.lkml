@@ -4,7 +4,7 @@ view: order_items {
   # to be used for all fields in this view.
   sql_table_name: "PUBLIC"."ORDER_ITEMS"
     ;;
-  drill_fields: [id]
+
   # This primary key is the unique key for this table in the underlying database.
   # You need to define a primary key in a view in order to join to other views.
 
@@ -117,11 +117,9 @@ view: order_items {
   set: detail {
     fields: [
       id,
-      inventory_items.product_name,
-      inventory_items.id,
-      users.last_name,
-      users.first_name,
-      users.id
+      created_date,
+      sale_price,
+      status
     ]
   }
 }
