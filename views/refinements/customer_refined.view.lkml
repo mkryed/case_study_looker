@@ -6,7 +6,7 @@ view: +users {
 
 dimension: age_tier {
   type: tier
-  tiers: [15,25,35,50,65]
+  tiers: [1,25,35,50,60]
   style: integer
   allow_fill: yes
   sql: ${age} ;;
