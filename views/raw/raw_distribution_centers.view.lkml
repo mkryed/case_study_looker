@@ -2,7 +2,7 @@
 view: distribution_centers {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: "PUBLIC"."DISTRIBUTION_CENTERS"
+  sql_table_name: `looker-partners.thelook.distribution_centers`
     ;;
   drill_fields: [id]
   # This primary key is the unique key for this table in the underlying database.

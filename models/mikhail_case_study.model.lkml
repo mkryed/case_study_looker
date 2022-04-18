@@ -1,8 +1,8 @@
 #################### Connection Definition ######################
-connection: "snowlooker"
+connection: "looker_partner_demo"
 
-#################### explore, datagroups, calling ###############
-include: "/explore/*.explore"
+#################### explore, datagroups includes ###############
+include: "/explores/*.explore"
 include: "/datagroups.lkml"
 
 #################### Caching policy #############################

@@ -9,7 +9,10 @@ view: dt_customer_facts {
       from order_items b
       group by 1
        ;;
+    datagroup_trigger: the24hourupdate
   }
+
+
 
   measure: count {
     type: count

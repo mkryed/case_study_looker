@@ -2,7 +2,7 @@
 view: etl_jobs {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: "PUBLIC"."ETL_JOBS"
+  sql_table_name: "THELOOK"."ETL_JOBS"
     ;;
   drill_fields: [id]
   # This primary key is the unique key for this table in the underlying database.

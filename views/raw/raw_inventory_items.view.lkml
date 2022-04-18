@@ -2,7 +2,7 @@
 view: inventory_items {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: "PUBLIC"."INVENTORY_ITEMS"
+  sql_table_name: `looker-partners.thelook.inventory_items`
     ;;
   drill_fields: [id]
   # This primary key is the unique key for this table in the underlying database.
